@@ -8,11 +8,6 @@ public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T>
     {
         get
         {
-            if (_instance == null)
-            {
-                Debug.LogError(typeof(T).ToString() + " is missing.");
-            }
-
             return _instance;
         }
     }

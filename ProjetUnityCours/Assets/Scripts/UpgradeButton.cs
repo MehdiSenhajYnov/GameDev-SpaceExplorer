@@ -32,20 +32,20 @@ public class UpgradeButton : Singleton<UpgradeButton>, ClickableObject
 
     }
 
-    public void ActiveNonClickable(Action buildUpgrade)
+    public void ActiveNonClickableButton()
     {
-        UpgradeAction = buildUpgrade;
+        UpgradeAction = null;
         gameObject.SetActive(true);
         SetNonClickable();
     }
 
-    public void SetNonClickable()
+    private void SetNonClickable()
     {
         button.interactable = false;
         isClickable = false;
     }
 
-    public void SetClickable()
+    private void SetClickable()
     {
         button.interactable = true;
         isClickable = true;

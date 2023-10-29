@@ -1,10 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-public class WoodVisual : Singleton<WoodVisual>
+public class WoodVisual : MonoBehaviour
 {
-    [SerializeField] private TMP_Text text;
+    private TMP_Text text;
+    [SerializeField] private TMP_Text MaxWoodtext;
     private TMP_Text GetText
     {
         get
@@ -22,12 +21,13 @@ public class WoodVisual : Singleton<WoodVisual>
     private void Start()
     {
         RessourceManager.Instance.woodChanged += UpdateText;
-        UpdateText(RessourceManager.Instance.Wood, 0, 0);
+        UpdateText(RessourceManager.Instance.Wood, 0, 0, RessourceManager.Instance.MaxWood);
     }
 
-    public void UpdateText(int newValue, int oldValue, int amountChanged)
+    public void UpdateText(int newValue, int oldValue, int amountChanged, int max)
     {
         GetText.text = newValue.ToString();
+        MaxWoodtext.text = "MAX:"+max.ToString();
     }
 
 

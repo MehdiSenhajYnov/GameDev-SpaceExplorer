@@ -10,6 +10,7 @@ public class CutButton : MonoBehaviour, ClickableObject
     // Start is called before the first frame update
     void Start()
     {
+        DesactiveButton();
     }
 
     void CutTree()
@@ -52,6 +53,7 @@ public class CutButton : MonoBehaviour, ClickableObject
     public void OnSpriteClicked()
     {
         CutTree();
+        DesactiveButton();
     }
 
     public void OnSpriteClicking()

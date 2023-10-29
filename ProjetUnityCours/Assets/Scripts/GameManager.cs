@@ -68,24 +68,11 @@ public class GameManager : Singleton<GameManager>
 
     }
 
-
-
-    public void BuyBuild(Building building)
+    public void GameOver()
     {
-        if (HaveEnoughResource(building.Cost))
-        {
-            RessourceManager.Instance.RemoveCoins(building.Cost.CoinCost);
-            RessourceManager.Instance.RemoveWood(building.Cost.WoodCost);
-            buildingsBuyed.Add(building);
-        } else
-        {
-            Debug.Log("Not enough coins");
-            Destroy(building.gameObject);
-        }
+        DisplayLooseScreen.Instance.ShowLooseScreen();
     }
 
-    public bool HaveEnoughResource(BuildingCost cost)
-    {
-        return RessourceManager.Instance.Coins >= cost.CoinCost && RessourceManager.Instance.Wood >= cost.WoodCost;
-    }
+
+
 }

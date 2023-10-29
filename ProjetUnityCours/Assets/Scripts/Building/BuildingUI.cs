@@ -1,15 +1,39 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BuildingUI : MonoBehaviour, ClickableObject
 {
+    public static Color CanBuyColor = new Color(1f, 1f, 1f);
+    public static Color CannotBuyColor = new Color(0.25f, 0.25f, 0.25f);
+    public Image image;
+        
     [SerializeField] GameObject buildingPrefab;
+    Cost buildingCost;
     [SerializeField] Transform buildingPrefabParent;
     GameObject createdObj;
     Building createdClickable;
+
+    Transform SelectedTransform;
+    public Transform GetSelectedTransform
+    {
+        get
+        {
+            if (SelectedTransform == null)
+            {
+                SelectedTransform = transform.GetChild(0);
+            }
+            return SelectedTransform;
+        }
+    }
+
     bool created;
-    bool NoWorkerAvaible;
+    bool cannotBuild {
+        get
+        {
+            return !GameManager.Instance.IsWorkerAvaible() || !buildingCost.CanBuy();
+        }
+    }
+
     public GameObject obj 
     { 
         get
@@ -18,24 +42,21 @@ public class BuildingUI : MonoBehaviour, ClickableObject
         }
     }
 
-    public void OnOtherObjectClicked(GameObject otherClicked)
+    // Start is called before the first frame update
+    void Start()
     {
-
+        buildingCost = buildingPrefab.GetComponent<Building>().LevelsInfo[0].cost;
+        image = GetComponent<Image>();
     }
+
     Vector3 MouseStartPosition;
     public void OnSpriteClicked()
     {
-        if (GameManager.Instance.IsWorkerAvaible() == false)
-        {
-            NoWorkerAvaible = true;
-            return;
-        } else
-        {
-            NoWorkerAvaible = false;
-        }
-        Debug.Log("BuildingUI clicked");
         created = false;
         MouseStartPosition = MouseSelection.GetMouseWorldPositionRounded();
+
+        BuyInfo.Instance.ShowBuyInfo(buildingCost);
+        GetSelectedTransform.gameObject.SetActive(true);
 
     }
 
@@ -43,7 +64,7 @@ public class BuildingUI : MonoBehaviour, ClickableObject
 
     public void OnSpriteClicking()
     {
-        if (NoWorkerAvaible)
+        if (cannotBuild)
         {
             return;
         }
@@ -68,6 +89,25 @@ public class BuildingUI : MonoBehaviour, ClickableObject
         createdObj = null;
         createdClickable = null;
         created = false;
+    }
+
+
+    public void OnOtherObjectClicked(GameObject otherClicked)
+    {
+        BuyInfo.Instance.HideBuyInfo();
+        GetSelectedTransform.gameObject.SetActive(false);
+    }
+
+    void Update()
+    {
+        if (buildingCost.CanBuy())
+        {
+            image.color = CanBuyColor;
+        }
+        else
+        {
+            image.color = CannotBuyColor;
+        }
     }
 
 }

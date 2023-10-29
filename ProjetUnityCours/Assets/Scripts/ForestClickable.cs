@@ -16,20 +16,24 @@ public class ForestClickable : MonoBehaviour, ClickableObject
             return cutButton;
         }
     }
+    
+    public Cost cutCost = new Cost(3, 0);
+    
     public void OnOtherObjectClicked(GameObject otherClicked)
     {
-        if (otherClicked == GetCutButton.gameObject)
-        {
-            return;
-        }
-        GetCutButton.DesactiveButton();
+        BuyInfo.Instance.HideBuyInfo();
         SelectionFrame.Instance.Desactivate();
+        if (otherClicked != GetCutButton.gameObject)
+        {
+            GetCutButton.DesactiveButton();
+        }
     }
 
     public void OnSpriteClicked()
     {
         SelectionFrame.Instance.SetAt(transform.position);
         GetCutButton.ActiveButton(this);
+        BuyInfo.Instance.ShowBuyInfo(cutCost);
     }
 
     public void OnSpriteClicking()
@@ -48,15 +52,4 @@ public class ForestClickable : MonoBehaviour, ClickableObject
         }
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

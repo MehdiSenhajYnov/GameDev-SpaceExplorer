@@ -1,20 +1,21 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Building : MonoBehaviour, ClickableObject
+[RequireComponent(typeof(ProgressionBar))]
+public abstract class Building : MonoBehaviour, ClickableObject
 {
     public static Color SelectedColor = new Color(0, 1, 0, 0.5f);
     public static Color ImpossibleColor = new Color(1, 0, 0, 0.5f);
     public static Color UnselectedColor = new Color(1, 1, 1, 0f);
-    bool Clicked;
-    [SerializeField] List<GameObject> AllTiles;
-    [SerializeField] SpriteRenderer Texture;
-    [SerializeField] Sprite[] LevelsSprites;
 
+    [SerializeField] List<GameObject> AllTiles;
+    [SerializeField] public List<LevelInfo> LevelsInfo;
     [SerializeField] GameObject SelectionObj;
-    SpriteRenderer SelectionSpriteRenderer;
-    SpriteRenderer GetSelectionSpriteRenderer
+
+    
+    private ProgressionBar progressionBar;
+    private SpriteRenderer SelectionSpriteRenderer;
+    protected SpriteRenderer GetSelectionSpriteRenderer
     {
         get
         {
@@ -25,54 +26,65 @@ public class Building : MonoBehaviour, ClickableObject
             return SelectionSpriteRenderer;
         }
     }
+    
+    public int currentLevel = -1;
+    public int nextLevel => currentLevel + 1;
+    private Collider2D[] cols;
+    private bool isSelected = false;
 
-    Collider2D[] cols;
+    public void Start()
+    {
+        currentLevel = -1;
+    }
 
-
-    public int currentLevel = 0;
-    public BuildingCost Cost = new BuildingCost(10, 5);
-
-    public ProgressionBar progressionBar;
-    public bool isSelected = false;
+    bool isBuilding => progressionBar != null && progressionBar.inProgress;
 
     public void OnSpriteClicked()
     {
         SetSelectedColor();
-        if (progressionBar != null && progressionBar.inProgress)
+
+        if (isBuilding)
         {
-            UpgradeButton.Instance.ActiveNonClickable(Upgrade);
+            UpgradeButton.Instance.ActiveNonClickableButton();
             return;
         }
-        if (currentLevel < LevelsSprites.Length - 1)
-            UpgradeButton.Instance.ActiveButton(Upgrade);
+        if (nextLevel < LevelsInfo.Count)
+        {
+            BuyInfo.Instance.ShowBuyInfo(LevelsInfo[nextLevel].cost);
+            if (LevelsInfo[nextLevel].cost.CanBuy())
+            {
+                UpgradeButton.Instance.ActiveButton(Upgrade);
+            } else
+            {
+                UpgradeButton.Instance.ActiveNonClickableButton();
+            }
+        }
         else
-            UpgradeButton.Instance.ActiveNonClickable(null);
+        {
+            UpgradeButton.Instance.ActiveNonClickableButton();
+            BuyInfo.Instance.HideBuyInfo();
+        }
     }
-
 
     void Upgrade()
     {
-        if (currentLevel < LevelsSprites.Length)
+        if (nextLevel < LevelsInfo.Count)
         {
-            progressionBar.runAtEnable = false;
-            progressionBar.enabled = false;
-            progressionBar.BuildTime = (int)(progressionBar.BuildTime * 1.5f);
-            progressionBar.StartProgressionBar(() =>
-            {
-                currentLevel++;
-                Texture.sprite = LevelsSprites[currentLevel];
-            });
-            UpgradeButton.Instance.ActiveNonClickable(Upgrade);
+            if (!LevelsInfo[nextLevel].cost.CanBuy()) return;
+            RessourceManager.Instance.Buy(LevelsInfo[nextLevel].cost);
+            StartBuildBar();
+            UpgradeButton.Instance.DeactiveButton();
         } else
         {
-            currentLevel = LevelsSprites.Length - 1;
-            UpgradeButton.Instance.ActiveNonClickable(null);
+            currentLevel = LevelsInfo.Count - 1;
+            UpgradeButton.Instance.ActiveNonClickableButton();
         }
     }
 
     public void OnOtherObjectClicked(GameObject otherClicked)
     {
         SetUnselectedColor();
+        BuyInfo.Instance.HideBuyInfo();
         if (otherClicked != null && otherClicked == UpgradeButton.Instance.gameObject ) return;
         UpgradeButton.Instance.DeactiveButton();
     }
@@ -81,7 +93,6 @@ public class Building : MonoBehaviour, ClickableObject
     {
 
     }
-
     public void OnSpriteUnClicked()
     {
 
@@ -105,7 +116,7 @@ public class Building : MonoBehaviour, ClickableObject
         foreach (var oneTile in AllTiles)
         {
             cols = Physics2D.OverlapPointAll(oneTile.transform.position);
-            Debug.Log("touching "+cols.Length);
+            //Debug.Log("touching " + cols.Length);
             if (cols.Length <= 1)
             {
                 SetSelectedColor();
@@ -120,27 +131,46 @@ public class Building : MonoBehaviour, ClickableObject
 
     public void StopMoving()
     {
-        if (GetSelectionSpriteRenderer.color == ImpossibleColor)
+        if (GetSelectionSpriteRenderer.color == ImpossibleColor || !LevelsInfo[0].cost.CanBuy())
         {
             Destroy(gameObject);
-        } else
+        } 
+        else
         {
-            GameManager.Instance.BuyBuild(this);
+            RessourceManager.Instance.BuyBuild(this, LevelsInfo[0].cost);
             progressionBar = GetComponent<ProgressionBar>();
-            progressionBar.runAtEnable = false;
-            progressionBar.enabled = true;
-            progressionBar.StartProgressionBar(() =>
-            {
-                if (isSelected)
-                {
-                    UpgradeButton.Instance.ActiveButton(Upgrade);
-                }
-            });
-
+            StartBuildBar();
             SetUnselectedColor();
+
+            DateSystem.Instance.OnDayChange += OnDayChangeBase;
+
         }
     }
 
+
+
+    void StartBuildBar()
+    {
+        progressionBar.BuildTime = LevelsInfo[nextLevel].buildTime;
+        progressionBar.StartProgressionBar(() =>
+        {
+            currentLevel++;
+            if (currentLevel == 0)
+            {
+                OnBuild();
+            }
+            else
+            {
+                OnUpgrade();
+            }
+
+            if (isSelected && nextLevel < LevelsInfo.Count)
+            {
+                BuyInfo.Instance.ShowBuyInfo(LevelsInfo[nextLevel].cost);
+                UpgradeButton.Instance.ActiveButton(Upgrade);
+            }
+        });
+    }
     
 
     void SetSelectedColor()
@@ -164,16 +194,23 @@ public class Building : MonoBehaviour, ClickableObject
     {
         GetSelectionSpriteRenderer.color = selColor;
     }
-}
 
-public class BuildingCost
-{
-    public int CoinCost;
-    public int WoodCost;
-
-    public BuildingCost(int coinCost, int woodCost)
+    void OnDisable()
     {
-        CoinCost = coinCost;
-        WoodCost = woodCost;
+        Debug.Log("OnDisable");
+        if (DateSystem.Instance == null) return;
+        DateSystem.Instance.OnDayChange -= OnDayChangeBase;
     }
+
+
+    protected abstract void OnBuild();
+    protected abstract void OnUpgrade();
+    protected void OnDayChangeBase()
+    {
+        if (currentLevel < 0) return;
+        OnDayChange();
+    }
+
+    protected abstract void OnDayChange();
+
 }

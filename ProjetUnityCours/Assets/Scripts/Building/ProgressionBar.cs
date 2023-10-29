@@ -7,11 +7,12 @@ using UnityEngine;
 public class ProgressionBar : MonoBehaviour
 {
 
-    public bool runAtEnable = true;
     public int BuildTime = 10;
     public int currentBuildTime = 0;
+    public bool inProgress = false;
+    
     public Transform BuildBar;
-    public Transform BuildBarFull;
+    private Transform BuildBarFull;
     public Transform GetBuildBarFull
     {
         get
@@ -24,7 +25,6 @@ public class ProgressionBar : MonoBehaviour
         }
     }
 
-    public bool inProgress = false;
 
 
     #region Constructors
@@ -91,10 +91,6 @@ public class ProgressionBar : MonoBehaviour
         StartCoroutine(Progressing(atEnd));
     }
 
-    private void OnEnable()
-    {
-        if (runAtEnable) StartProgressionBar();
-    }
 
     void Desactive()
     {

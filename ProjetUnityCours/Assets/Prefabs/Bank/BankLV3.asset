@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2de630040ca8c434bb4a78f17af99f7c, type: 3}
+  m_Name: BankLV3
+  m_EditorClassIdentifier: 
+  cost:
+    CoinCost: 20000
+    WoodCost: 20000
+  buildTime: 6
+  sprite: {fileID: 21300000, guid: a4be27e5b10d7d14d8313dd49a386a5c, type: 3}
+  maxCoins: 99999999
