@@ -23,6 +23,7 @@ public class GameManager : Singleton<GameManager>
             if (oldMaxWorker != tempMaxWorker)
             {
                 oldMaxWorker = tempMaxWorker;
+                WorkerAvaible();
                 UpdateWorkerText();
             }
             return tempMaxWorker;

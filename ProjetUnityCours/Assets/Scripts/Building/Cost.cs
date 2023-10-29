@@ -2,13 +2,13 @@
 [System.Serializable]
 public class Cost
 {
-    public int CoinCost;
-    public int WoodCost;
+    public int Coin;
+    public int Wood;
 
     public Cost(int coinCost, int woodCost)
     {
-        CoinCost = coinCost;
-        WoodCost = woodCost;
+        Coin = coinCost;
+        Wood = woodCost;
     }
 
     public bool CanBuy()

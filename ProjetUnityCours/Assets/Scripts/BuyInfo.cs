@@ -22,8 +22,8 @@ public class BuyInfo : Singleton<BuyInfo>
     public void ShowBuyInfo(Cost cost)
     {
         BuyInfoPanel.SetActive(true);
-        CoinCostText.text = cost.CoinCost.ToString();
-        WoodCostText.text = cost.WoodCost.ToString();
+        CoinCostText.text = cost.Coin.ToString();
+        WoodCostText.text = cost.Wood.ToString();
     }
 
     public void HideBuyInfo()

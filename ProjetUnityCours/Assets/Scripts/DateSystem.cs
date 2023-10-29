@@ -4,7 +4,7 @@ using System;
 public class DateSystem : Singleton<DateSystem>
 {
     public float timeMultiplier = 1f;
-    public const float constMultiplier = 25;
+    public const float constMultiplier = 100;
     public TMP_Text dayText;
     public TMP_Text hoursText;
 
@@ -15,6 +15,7 @@ public class DateSystem : Singleton<DateSystem>
     public float timer;
 
     public event Action OnDayChange;
+    public event Action OnHourChange;
 
     void Update()
     {
@@ -25,6 +26,7 @@ public class DateSystem : Singleton<DateSystem>
             timer = 0;
             minutes = 0;
             hours++;
+            OnHourChange?.Invoke();
             hoursText.text = hours.ToString();
             if (hours >= 24)
             {

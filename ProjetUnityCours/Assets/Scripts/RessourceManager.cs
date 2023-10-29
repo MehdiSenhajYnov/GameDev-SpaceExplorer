@@ -79,13 +79,13 @@ public class RessourceManager : Singleton<RessourceManager>
 
     public bool CanBuy(Cost cost)
     {
-        return Coins >= cost.CoinCost && Wood >= cost.WoodCost;
+        return Coins >= cost.Coin && Wood >= cost.Wood;
     }
 
     public void AddRessource(Cost cost)
     {
-        AddCoins(cost.CoinCost);
-        AddWood(cost.WoodCost);
+        AddCoins(cost.Coin);
+        AddWood(cost.Wood);
     }
 
 
@@ -101,7 +101,7 @@ public class RessourceManager : Singleton<RessourceManager>
     public void Buy(Cost buildCost)
     {
 
-        RemoveCoins(buildCost.CoinCost);
-        RemoveWood(buildCost.WoodCost);
+        RemoveCoins(buildCost.Coin);
+        RemoveWood(buildCost.Wood);
     }
 }

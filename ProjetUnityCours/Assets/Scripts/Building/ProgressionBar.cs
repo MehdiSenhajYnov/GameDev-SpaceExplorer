@@ -1,12 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Build.Reporting;
 using UnityEngine;
 
 public class ProgressionBar : MonoBehaviour
 {
-
+    // in game hours
     public int BuildTime = 10;
     public int currentBuildTime = 0;
     public bool inProgress = false;
@@ -57,14 +56,16 @@ public class ProgressionBar : MonoBehaviour
 
         GameManager.Instance.UseWorker();
         BuildBar.gameObject.SetActive(true);
+        int currentHour = DateSystem.Instance.hours;
 
         while (currentBuildTime < BuildTime)
         {
-            yield return new WaitForSeconds(1);
+            yield return new WaitUntil(() => currentHour != DateSystem.Instance.hours);
+            //yield return new WaitForSeconds(1);
             currentBuildTime++;
             GetBuildBarFull.localScale = new Vector3((float)currentBuildTime / (float)BuildTime, GetBuildBarFull.localScale.y, GetBuildBarFull.localScale.z);
+            currentHour = DateSystem.Instance.hours;
         }
-        yield return new WaitForSeconds(1);
         GameManager.Instance.WorkerAvaible();
         inProgress = false;
 

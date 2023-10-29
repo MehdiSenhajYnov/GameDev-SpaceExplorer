@@ -25,10 +25,21 @@ public class Tax : MonoBehaviour
 
     public void HaveToPayTax()
     {
-        if (DateSystem.Instance.day % 10 == 0)
+        if (DateSystem.Instance.day % 5 == 0)
         {
             PayTax();
         }
+
+        if (DateSystem.Instance.day % 10 == 0)
+        {
+            buildingsTaxRate *= 1.1f;
+        }
+
+        if (DateSystem.Instance.day % 15 == 0)
+        {
+            dayTaxRate *= 1.1f;
+        }
+
     }
 
     public void PayTax()

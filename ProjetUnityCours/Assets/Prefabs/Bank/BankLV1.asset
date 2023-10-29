@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: BankLV1
   m_EditorClassIdentifier: 
   cost:
-    CoinCost: 950
-    WoodCost: 475
+    Coin: 900
+    Wood: 900
   buildTime: 2
   sprite: {fileID: 21300000, guid: 697ec9cd0f08ac84db4878c6aa211dd1, type: 3}
   maxCoins: 999999

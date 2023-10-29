@@ -34,7 +34,8 @@ public class CutButton : MonoBehaviour, ClickableObject
                 TerrainGenerator.Instance.TerrainTile, false);
 
             Destroy(forestTemp);
-            RessourceManager.Instance.AddWood(1);
+            RessourceManager.Instance.AddWood(10);
+            Destroy(_progressionBar.gameObject);
         });
     }
 

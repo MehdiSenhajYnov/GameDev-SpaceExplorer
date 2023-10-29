@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: HouseLV3
   m_EditorClassIdentifier: 
   cost:
-    CoinCost: 1000
-    WoodCost: 850
-  buildTime: 7
+    Coin: 3000
+    Wood: 2000
+  buildTime: 180
   sprite: {fileID: 21300000, guid: 718a1cf3671aca14bab826a48568fdb3, type: 3}
   dailyGain:
-    CoinCost: 15
-    WoodCost: 0
+    Coin: 200
+    Wood: 0
