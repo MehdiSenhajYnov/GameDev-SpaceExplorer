@@ -26,6 +26,8 @@ public abstract class Building : MonoBehaviour, ClickableObject
             return SelectionSpriteRenderer;
         }
     }
+
+    public SpriteRenderer BuildSprite;
     
     public int currentLevel = -1;
     public int nextLevel => currentLevel + 1;
@@ -155,6 +157,7 @@ public abstract class Building : MonoBehaviour, ClickableObject
         progressionBar.StartProgressionBar(() =>
         {
             currentLevel++;
+
             if (currentLevel == 0)
             {
                 OnBuild();
@@ -169,6 +172,8 @@ public abstract class Building : MonoBehaviour, ClickableObject
                 BuyInfo.Instance.ShowBuyInfo(LevelsInfo[nextLevel].cost);
                 UpgradeButton.Instance.ActiveButton(Upgrade);
             }
+
+            BuildSprite.sprite = LevelsInfo[currentLevel].sprite;
         });
     }
     

@@ -835,6 +835,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f3aa08c298b27d54f8db0a18cd10e016, type: 2}
   - {fileID: 11400000, guid: c3105772ce5ba364d851d0893a082f15, type: 2}
   SelectionObj: {fileID: 7891017297084800743}
+  BuildSprite: {fileID: 8925346086383271553}
   currentLevel: -1
 --- !u!1 &7891017297084800743
 GameObject:
